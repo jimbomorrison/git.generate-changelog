@@ -1,4 +1,4 @@
-== git.generate-changelog ==
+git.generate-changelog
 
 This is a *very* basic script for generating a nice bit of changelog from your git commits.
 
