@@ -27,13 +27,17 @@ Example:
  - FIXED:
 
  -- Fixed bug in new foo ~Jim
+ 
  -- Fix - reduced button size to small in common fragments ~David
+ 
  -- FIX to unit sizing in record header to avoid button wrap ~David
 
  - NEW:
 
- -- Added; allow_304 & cancel_304 to memcache to allow modules/templates/use-cases to prevent 304s being thown on an ad-hoc basis.  Useful for ajax/search results ~Jim
+ -- Added; allow_304 & cancel_304 to memcache to allow modules/templates/use-cases to prevent 304s being thown on an ad-hoc basis. ~Jim
+ 
  -- Added config switch for v6 subnav ~Jim
+ 
  -- Added class hooks and extra wrappers to ifxless units ~David
 
  - BRANCHES MERGED IN:
@@ -43,7 +47,9 @@ Example:
  - OTHER CHANGES:
 
  -- Minor debug fixes for vpath_module caching ~Jim
+ 
  -- Creating new debug template for Progress bars ~David
+ 
  -- Conflicts: ~Jim
 
 
