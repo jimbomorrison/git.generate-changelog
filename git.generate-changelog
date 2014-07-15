@@ -1,18 +1,23 @@
 #!/usr/local/bin/perl
 ## use Data::Dumper;
 
+use POSIX qw(strftime);
+
 ## git changelog generator
 ## -----------------------
 ## Usage: git.generate-changelog [commit-md5]
 ## -----------------------
 ## Copyright : Deep Blue Sky Digital Ltd
 ## Warrantee : ABSOLULTELY NONE WHATSOEVER
-## License   : Take your pick.. something opensource 
+## License   : Take your pick.. something opensource
 ## -----------------------
 
 @aLines         = split /\n/, `git log`;
-$stop           = $ARGV[0];
+$stop           = $ARGV[0] || 'release/';
 $author         = '';
+
+chomp ( $branch         = `git branch --no-color 2> /dev/null | fgrep '*' | sed 's/\* //'` );
+chomp ( $user           = `whoami`);
 
 foreach my $line (@aLines){
         $author         = $1 if $line =~ /^Author: (\S+)/;
@@ -20,6 +25,7 @@ foreach my $line (@aLines){
 
         if ( $message ) {
 
+                $message =~ s/\[completed:\s*(\d+)\]/[released:\1]/gsio;
                 $message .= " ~$author";
 
                 if ( $message =~ /^Fix/i ) {
@@ -33,6 +39,8 @@ foreach my $line (@aLines){
                         }
                 } elsif ( $message =~ /^Add/i ){
                         push @{$output{'NEW'}}, $message;
+                } elsif ( $message =~ /^Update/i ){
+                        push @{$output{'UPDATED'}}, $message;
                 } else {
                         push @{$output{'OTHER'}}, $message;
                 }
@@ -43,6 +51,14 @@ foreach my $line (@aLines){
         last if $line =~ $stop;
 }
 
+$branch =~ /(.*)\/(.*)/gsio;
+$type           = uc $1;
+$version        = $2;
+
+chomp( $date = strftime "%m/%d/%Y", localtime );
+
+print "\n\nCHANGELOG : $type - Spirit $version - $user - $date\n";
+
 if ( scalar @{$output{'FIXED'}} ){
         print "\n - FIXED:\n\n -- ";
         print join "\n -- ", @{$output{'FIXED'}};
@@ -52,6 +68,12 @@ if ( scalar @{$output{'FIXED'}} ){
 if ( scalar @{$output{'NEW'}} ){
         print "\n - NEW:\n\n -- ";
         print join "\n -- ", @{$output{'NEW'}};
+        print "\n";
+}
+
+if ( scalar @{$output{'UPDATED'}} ){
+        print "\n - UPDATED:\n\n -- ";
+        print join "\n -- ", @{$output{'UPDATED'}};
         print "\n";
 }
 
@@ -66,3 +88,5 @@ if ( scalar @{$output{'OTHER'}} ){
         print join "\n -- ", @{$output{'OTHER'}};
         print "\n";
 }
+
+print "\n\n";
